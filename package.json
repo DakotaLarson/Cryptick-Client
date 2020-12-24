@@ -1,0 +1,25 @@
+{
+  "name": "cryptick-client",
+  "version": "1.0.0",
+  "description": "Starting code for a Cryptick backtest client",
+  "main": "build/App.js",
+  "scripts": {
+    "build": "tsc -p .",
+    "start": "node build/App.js"
+  },
+  "author": "Dakota Larson",
+  "private": true,
+  "devDependencies": {
+    "@types/express": "^4.17.9",
+    "@types/node": "latest",
+    "@typescript-eslint/eslint-plugin": "latest",
+    "@typescript-eslint/parser": "latest",
+    "eslint": "latest",
+    "typescript": "latest"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "technicalindicators": "^3.1.0"
+  }
+}
