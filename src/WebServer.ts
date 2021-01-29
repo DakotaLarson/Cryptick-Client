@@ -1,5 +1,36 @@
 import express = require("express");
+import bodyParser = require("body-parser");
 import {Express, Request, Response} from "express";
+
+interface RequestCandle {
+  candleSetId: number;
+  id: number;
+  fromTradeId: number;
+  toTradeId: number;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+  baseVolume: number;
+  buyerMakerVolume: number;
+  buyerMakerBaseVolume: number;
+  vwap: number;
+  time: Date;
+}
+
+interface CandleRequest {
+  backtestId: number;
+  candle: RequestCandle;
+}
+
+interface CandleResponse {
+  backtestId: number;
+  openPosition?: {
+    size: number;
+  }
+  closePosition?: boolean;
+}
 
 interface PingResponse {
   version: number;
@@ -14,6 +45,7 @@ export class WebServer {
 
   constructor() {
     this.app = express();
+    this.app.use(bodyParser.json());
 
     this.onPostCandle = this.onPostCandle.bind(this);
     this.onPostTrades = this.onPostTrades.bind(this);
@@ -47,11 +79,16 @@ export class WebServer {
   }
 
   private onPostCandle(req: Request, res: Response) {
-
+    const {backtestId} = req.body as CandleRequest;
+    console.log(backtestId);
+    const response: CandleResponse = {
+      backtestId,
+    };
+    res.json(response);
   }
 
   private onPostTrades(req: Request, res: Response) {
-
+    res.sendStatus(200);
   }
 
 }
