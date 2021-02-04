@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6d63ac3b-d0ba-4ad8-8aab-917c87b1ff58" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/Backtest.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/WebServer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/WebServer.ts" afterDir="false" />
     </list>
@@ -53,11 +54,25 @@
       <workItem from="1608779669347" duration="2350000" />
       <workItem from="1609155270494" duration="603000" />
       <workItem from="1611062965221" duration="603000" />
-      <workItem from="1611423506741" duration="5208000" />
+      <workItem from="1611423506741" duration="5416000" />
+      <workItem from="1612149077953" duration="97000" />
+      <workItem from="1612149232268" duration="13165000" />
     </task>
+    <task id="LOCAL-00001" summary="Handle candle request">
+      <created>1611964294985</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1611964294985</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Handle candle request" />
+    <option name="LAST_COMMIT_MESSAGE" value="Handle candle request" />
   </component>
 </project>

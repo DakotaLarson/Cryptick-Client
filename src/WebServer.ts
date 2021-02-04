@@ -1,8 +1,9 @@
 import express = require("express");
 import bodyParser = require("body-parser");
 import {Express, Request, Response} from "express";
+import {Backtest} from "./Backtest";
 
-interface RequestCandle {
+export interface RequestCandle {
   candleSetId: number;
   id: number;
   fromTradeId: number;
@@ -24,10 +25,11 @@ interface CandleRequest {
   candle: RequestCandle;
 }
 
-interface CandleResponse {
+export interface CandleResponse {
   backtestId: number;
   openPosition?: {
-    size: number;
+    base?: number;
+    quote?: number;
   }
   closePosition?: boolean;
 }
@@ -41,14 +43,17 @@ export class WebServer {
 
   private static readonly PORT = 4000;
   private static readonly CRYPTICK_VERSION = 1;
-  private app: Express;
+
+  private readonly app: Express;
+  private readonly backtestsByIds: Map<number, Backtest>;
 
   constructor() {
     this.app = express();
     this.app.use(bodyParser.json());
+    this.backtestsByIds = new Map();
 
     this.onPostCandle = this.onPostCandle.bind(this);
-    this.onPostTrades = this.onPostTrades.bind(this);
+    this.handleBacktestRequest = this.handleBacktestRequest.bind(this);
   }
 
   public initialize(): void {
@@ -61,7 +66,9 @@ export class WebServer {
   private initRoutes() {
     this.app.get("/ping", WebServer.onGetPing);
     this.app.post("/candle", this.onPostCandle);
-    this.app.post("/trades", this.onPostTrades);
+
+    this.app.post("/backtest", this.handleBacktestRequest);
+    this.app.delete("/backtest", this.handleBacktestRequest);
 
   }
 
@@ -79,16 +86,40 @@ export class WebServer {
   }
 
   private onPostCandle(req: Request, res: Response) {
-    const {backtestId} = req.body as CandleRequest;
-    console.log(backtestId);
-    const response: CandleResponse = {
-      backtestId,
-    };
-    res.json(response);
+    const {backtestId, candle} = req.body as CandleRequest;
+    const backtest = this.backtestsByIds.get(backtestId);
+    if (backtest) {
+      const response = backtest.handleCandle(candle);
+      res.json(response);
+    } else {
+      console.log(`WARNING: No backtest found with id ${backtestId}`);
+      res.sendStatus(500);
+    }
   }
 
-  private onPostTrades(req: Request, res: Response) {
+  private handleBacktestRequest(req: Request, res: Response) {
+    const {backtestId} = req.body;
+    if (!backtestId) {
+      console.log("WARNING: Invalid backtest request");
+      res.sendStatus(400);
+      return;
+    }
+    if (req.method === "POST") {
+      if (this.backtestsByIds.has(backtestId)) {
+        console.log(`WARNING: Removed backtest with id ${backtestId}`);
+        this.backtestsByIds.delete(backtestId);
+      }
+      this.backtestsByIds.set(backtestId, new Backtest(backtestId));
+      console.log(`New backtest created with id: ${backtestId}`);
+    } else if (req.method === "DELETE") {
+      if (!this.backtestsByIds.delete(backtestId)) {
+        console.log(`WARNING: No backtest to remove with id ${backtestId}`);
+      }
+      console.log(`Backtest completed with id ${backtestId}`);
+    }
     res.sendStatus(200);
   }
+
+
 
 }
